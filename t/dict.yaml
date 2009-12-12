@@ -1,0 +1,59 @@
+char:
+  ja:
+    a:
+      before: 'あいうえお'
+      after: 'ワミフネト'
+    ka:
+      before: 'かきくけこ'
+      after: 'アチルテヨ'
+    sa:
+      before: 'さしすせそ'
+      after: 'ラキヌヘホ'
+    ta:
+      before: 'たちつてと'
+      after: 'サヒユセソ'
+    na:
+      before: 'なにぬねの'
+      after: 'ハシスメオ'
+    ma:
+      before: 'まみむめも'
+      after: 'ヤイツレコ'
+    ya:
+      before: 'やゆよ'
+      after: 'タモヲ'
+    ra:
+      before: 'らりるれろ'
+      after: 'ナニウエノ'
+    wa:
+      before: 'わをん'
+      after: 'カムン'
+    ga:
+      before: 'がぎぐげご'
+      after: 'ダヂヅデゾ'
+    za:
+      before: 'ざじずぜぞ'
+      after: 'バビブゲボ'
+    da:
+      before: 'だぢづでど'
+      after: 'ガギグベゴ'
+    ba:
+      before: 'ばびぶべぼ'
+      after: 'ザジズゼド'
+    pa:
+      before: 'ぱぴぷぺぽ'
+      after: 'プポピパペ'
+    la:
+      before: 'ぁぃぅぇぉ'
+      after: 'ァィゥェォ'
+    ltu:
+      before: 'っゃゅょ'
+      after: 'ッャュョ'
+    en:
+      before: 'abcdefghijklmnopqrstuvwxyz'
+      after: 'ypltavkrezgmshubxncdijfqow'
+  
+word:
+  ja:
+    - before: 'たぬきのよめいり'
+      after: 'サスチオモレミニ'
+  
