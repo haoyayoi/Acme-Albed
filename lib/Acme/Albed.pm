@@ -3,7 +3,6 @@ package Acme::Albed;
 use Any::Moose;
 use utf8;
 use YAML;
-use Data::Dumper;
 use Carp;
 our $VERSION = '0.01';
 

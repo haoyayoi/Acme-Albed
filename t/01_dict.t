@@ -1,5 +1,5 @@
 use strict;
-use Test::Base tests => 101;
+use Test::More;
 use Acme::Albed;
 use utf8;
 
@@ -13,3 +13,4 @@ for my $key (keys %$dic) {
     }
 }
 
+done_testing();
