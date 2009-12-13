@@ -1,9 +1,8 @@
 package Acme::Albed;
 
-use Any::Moose;
 use utf8;
-use YAML;
-use Carp;
+use Any::Moose;
+
 our $VERSION = '0.01';
 
 has albedian => (
@@ -12,90 +11,64 @@ has albedian => (
     default => 0,
 );
 
-sub dict {
-    my ($self, $path) = @_;
-    my $dict = Load(<<'...');
-a:
-  before: 'あいうえお'
-  after: 'ワミフネト'
-ka:
-  before: 'かきくけこ'
-  after: 'アチルテヨ'
-sa:
-  before: 'さしすせそ'
-  after: 'ラキヌヘホ'
-ta:
-  before: 'たちつてと'
-  after: 'サヒユセソ'
-na:
-  before: 'なにぬねの'
-  after: 'ハシスメオ'
-ma:
-  before: 'まみむめも'
-  after: 'ヤイツレコ'
-ya:
-  before: 'やゆよ'
-  after: 'タモヲ'
-ra:
-  before: 'らりるれろ'
-  after: 'ナニウエノ'
-wa:
-  before: 'わをん'
-  after: 'カムン'
-ga:
-  before: 'がぎぐげご'
-  after: 'ダヂヅデゾ'
-za:
-  before: 'ざじずぜぞ'
-  after: 'バビブゲボ'
-da:
-  before: 'だぢづでど'
-  after: 'ガギグベゴ'
-ba:
-  before: 'ばびぶべぼ'
-  after: 'ザジズゼド'
-pa:
-  before: 'ぱぴぷぺぽ'
-  after: 'プポピパペ'
-la:
-  before: 'ぁぃぅぇぉ'
-  after: 'ァィゥェォ'
-ltu:
-  before: 'っゃゅょ'
-  after: 'ッャュョ'
-en:
-  before: 'abcdefghijklmnopqrstuvwxyz'
-  after: 'ypltavkrezgmshubxncdijfqow'
-...
-    return $dict;
-}
+has dict => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    lazy    => 1,
+    default => sub {
+        my $dict = {
+            a   => { before => 'あいうえお', after => 'ワミフネト', },
+            ka  => { before => 'かきくけこ', after => 'アチルテヨ', },
+            sa  => { before => 'さしすせそ', after => 'ラキヌヘホ', },
+            ta  => { before => 'たちつてと', after => 'サヒユセソ', },
+            na  => { before => 'なにぬねの', after => 'ハシスメオ', },
+            ma  => { before => 'まみむめも', after => 'ヤイツレコ', },
+            ya  => { before => 'やゆよ',       after => 'タモヲ', },
+            ra  => { before => 'らりるれろ', after => 'ナニウエノ', },
+            wa  => { before => 'わをん',       after => 'カムン', },
+            ga  => { before => 'がぎぐげご', after => 'ダヂヅデゾ', },
+            za  => { before => 'ざじずぜぞ', after => 'バビブゲボ', },
+            da  => { before => 'だぢづでど', after => 'ガギグベゴ', },
+            ba  => { before => 'ばびぶべぼ', after => 'ザジズゼド', },
+            pa  => { before => 'ぱぴぷぺぽ', after => 'プポピパペ', },
+            la  => { before => 'ぁぃぅぇぉ', after => 'ァィゥェォ', },
+            ltu => { before => 'っゃゅょ',    after => 'ッャュョ', },
+            en  => {
+                before => 'abcdefghijklmnopqrstuvwxyz',
+                after  => 'ypltavkrezgmshubxncdijfqow',
+            },
+        };
+        return $dict;
+    },
+);
 
 sub to_albed {
     my ( $self, $arg ) = @_;
     return unless defined $arg;
     $self->albedian(0);
-    $self->_conv( $arg );
+    $self->_conv($arg);
 }
 
 sub from_albed {
     my ( $self, $arg ) = @_;
     return unless defined $arg;
     $self->albedian(1);
-    $self->_conv( $arg );
+    $self->_conv($arg);
 }
 
 sub _conv {
     my ( $self, $message ) = @_;
     my $res;
-    my $dict = $self->dict;
-    my @mos  = keys( %$dict );
+    my $dict    = $self->dict;
+    my @mos     = keys(%$dict);
     my @message = split //, $message;
     for my $i ( 0 .. $#message ) {
         my $char = $message[$i];
-        if ($char =~ /(\s|\t|\n)/) {
+        if ( $char =~ /(\s|\t|\n)/ ) {
             $res .= $char;
-        } else {
-            return unless ( defined $char && $char ne "");
+        }
+        else {
+            return unless ( defined $char && $char ne "" );
             foreach my $key (@mos) {
                 $" = "|";
                 my ( $source, $conv ) = $self->_resource( $dict->{$key} );
@@ -117,9 +90,10 @@ sub _conv {
 sub _resource {
     my ( $self, $dict ) = @_;
     if ( $self->albedian ) {
-         return ( $dict->{after}, $dict->{before} );
-    } else {
-         return ( $dict->{before}, $dict->{after} );
+        return ( $dict->{after}, $dict->{before} );
+    }
+    else {
+        return ( $dict->{before}, $dict->{after} );
     }
 }
 1;
@@ -132,8 +106,9 @@ Acme::Albed - Convert from/to Albedian.
 =head1 SYNOPSIS
 
   use Acme::Albed;
-  my $albed = Acme::Albed->new();
-  my $res = $albed->to_albed("...");
+  my $albed = Acme::Albed->new;
+  my $albedian = $albed->to_albed("...");
+  my $hiragana = $albed->from_albed("...");
 
 =head1 DESCRIPTION
 

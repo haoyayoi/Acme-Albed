@@ -2,7 +2,6 @@ use inc::Module::Install;
 name 'Acme-Albed';
 all_from 'lib/Acme/Albed.pm';
 
-requires 'YAML';
 requires 'Any::Moose';
 
 tests 't/*.t';
