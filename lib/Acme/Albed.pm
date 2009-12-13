@@ -16,114 +16,112 @@ sub dict {
     my ($self, $path) = @_;
     my $dict = Load(<<'...');
 a:
-  before: 'あ,い,う,え,お'
-  after: 'ワ,ミ,フ,ネ,ト'
+  before: 'あいうえお'
+  after: 'ワミフネト'
 ka:
-  before: 'か,き,く,け,こ'
-  after: 'ア,チ,ル,テ,ヨ'
+  before: 'かきくけこ'
+  after: 'アチルテヨ'
 sa:
-  before: 'さ,し,す,せ,そ'
-  after: 'ラ,キ,ヌ,ヘ,ホ'
+  before: 'さしすせそ'
+  after: 'ラキヌヘホ'
 ta:
-  before: 'た,ち,つ,て,と'
-  after: 'サ,ヒ,ユ,セ,ソ'
+  before: 'たちつてと'
+  after: 'サヒユセソ'
 na:
-  before: 'な,に,ぬ,ね,の'
-  after: 'ハ,シ,ス,メ,オ'
+  before: 'なにぬねの'
+  after: 'ハシスメオ'
 ma:
-  before: 'ま,み,む,め,も'
-  after: 'ヤ,イ,ツ,レ,コ'
+  before: 'まみむめも'
+  after: 'ヤイツレコ'
 ya:
-  before: 'や,ゆ,よ'
-  after: 'タ,モ,ヲ'
+  before: 'やゆよ'
+  after: 'タモヲ'
 ra:
-  before: 'ら,り,る,れ,ろ'
-  after: 'ナ,ニ,ウ,エ,ノ'
+  before: 'らりるれろ'
+  after: 'ナニウエノ'
 wa:
-  before: 'わ,を,ん'
-  after: 'カ,ム,ン'
+  before: 'わをん'
+  after: 'カムン'
 ga:
-  before: 'が,ぎ,ぐ,げ,ご'
-  after: 'ダ,ヂ,ヅ,デ,ゾ'
+  before: 'がぎぐげご'
+  after: 'ダヂヅデゾ'
 za:
-  before: 'ざ,じ,ず,ぜ,ぞ'
-  after: 'バ,ビ,ブ,ゲ,ボ'
+  before: 'ざじずぜぞ'
+  after: 'バビブゲボ'
 da:
-  before: 'だ,ぢ,づ,で,ど'
-  after: 'ガ,ギ,グ,ベ,ゴ'
+  before: 'だぢづでど'
+  after: 'ガギグベゴ'
 ba:
-  before: 'ば,び,ぶ,べ,ぼ'
-  after: 'ザ,ジ,ズ,ゼ,ド'
+  before: 'ばびぶべぼ'
+  after: 'ザジズゼド'
 pa:
-  before: 'ぱ,ぴ,ぷ,ぺ,ぽ'
-  after: 'プ,ポ,ピ,パ,ペ'
+  before: 'ぱぴぷぺぽ'
+  after: 'プポピパペ'
 la:
-  before: 'ぁ,ぃ,ぅ,ぇ,ぉ'
-  after: 'ァ,ィ,ゥ,ェ,ォ'
+  before: 'ぁぃぅぇぉ'
+  after: 'ァィゥェォ'
 ltu:
-  before: 'っ,ゃ,ゅ,ょ'
-  after: 'ッ,ャ,ュ,ョ'
+  before: 'っゃゅょ'
+  after: 'ッャュョ'
 en:
-  before: 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z'
-  after: 'y,p,l,t,a,v,k,r,e,z,g,m,s,h,u,b,x,n,c,d,i,j,f,q,o,w'
+  before: 'abcdefghijklmnopqrstuvwxyz'
+  after: 'ypltavkrezgmshubxncdijfqow'
 ...
     return $dict;
 }
 
-has source => (
-    is  => 'rw',
-    isa => 'Str',
-);
-
 sub to_albed {
     my ( $self, $arg ) = @_;
-    my $source = $arg || $self->source;
-    return unless $source;
-    my $len = length($source) - 1;
+    return unless defined $arg;
+    $self->albedian(0);
+    $self->_conv( $arg );
+}
+
+sub from_albed {
+    my ( $self, $arg ) = @_;
+    return unless defined $arg;
+    $self->albedian(1);
+    $self->_conv( $arg );
+}
+
+sub _conv {
+    my ( $self, $message ) = @_;
     my $res;
-    for my $i ( 0 ... $len ) {
-        my $char = substr( $source, $i, 1 );
-        return unless ( defined $char && $char ne "");
-        $res .= $self->_conv_to_albed( $char );
-    }
-    unless ( defined $res && $res ne "" ) {
-        croak "Invalied input: $source";
+    my $dict = $self->dict;
+    my @mos  = keys( %$dict );
+    my @message = split //, $message;
+    for my $i ( 0 .. $#message ) {
+        my $char = $message[$i];
+        if ($char =~ /(\s|\t|\n)/) {
+            $res .= $char;
+        } else {
+            return unless ( defined $char && $char ne "");
+            foreach my $key (@mos) {
+                $" = "|";
+                my ( $source, $conv ) = $self->_resource( $dict->{$key} );
+                my @source = split //, $source;
+                my @conv   = split //, $conv;
+                if ( $char =~ /(@source)/ ) {
+                    for my $i ( 0 .. $#source ) {
+                        if ( $char eq $source[$i] ) {
+                            $res .= $conv[$i];
+                        }
+                    }
+                }
+            }
+        }
     }
     return $res;
 }
 
-sub _conv_to_albed {
-    my ( $self, $char ) = @_;
-    return unless ( defined $char && $char ne "" );
-
-    my $result;
-    my @mos  = keys( %{$self->dict} );
-    my $dict = $self->dict;
-    foreach my $key (@mos) {
-        my $source = $dict->{$key}->{before};
-        my $conv   = $dict->{$key}->{after};
-        if ( $result = $self->_data_comp( $char, $source, $conv ) ) {
-            return $result;
-        }
+sub _resource {
+    my ( $self, $dict ) = @_;
+    if ( $self->albedian ) {
+         return ( $dict->{after}, $dict->{before} );
+    } else {
+         return ( $dict->{before}, $dict->{after} );
     }
-    return;
 }
-
-sub _data_comp {
-    my ( $self, $char, $source, $conv ) = @_;
-    $" = "|";
-    my @source = split( /,/, $source );
-    my @conv   = split( /,/, $conv );
-    if ( $char =~ /(@source)/ ) {
-        for my $i ( 0 ... @source - 1 ) {
-            if ( $char eq $source[$i] ) {
-                return $conv[$i];
-            }
-        }
-    }
-    return;
-}
-
 1;
 __END__
 
