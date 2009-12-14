@@ -3,7 +3,7 @@ package Acme::Albed;
 use utf8;
 use Any::Moose;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has albedian => (
     is      => 'rw',
@@ -22,6 +22,7 @@ has dict => (
             sa  => { before => 'さしすせそ', after => 'ラキヌヘホ', },
             ta  => { before => 'たちつてと', after => 'サヒユセソ', },
             na  => { before => 'なにぬねの', after => 'ハシスメオ', },
+            ha  => { before => 'はひふへほ', after => 'マリクケロ', },
             ma  => { before => 'まみむめも', after => 'ヤイツレコ', },
             ya  => { before => 'やゆよ',       after => 'タモヲ', },
             ra  => { before => 'らりるれろ', after => 'ナニウエノ', },
