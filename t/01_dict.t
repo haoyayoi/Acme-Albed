@@ -16,6 +16,12 @@ for my $key ( keys %$dic ) {
     }
 }
 
+# other chars
+
+is( $albed->to_albed( '[],.@:;/' ), '[],.@:;/' );
+is( $albed->to_albed( '表右左下上' ), '表右左下上' );
+is( $albed->to_albed( 'アイウエオ' ), 'アイウエオ' );
+
 # undef
 is( $albed->to_albed( undef ), undef );
 is( $albed->from_albed( undef ), undef );
