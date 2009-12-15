@@ -3,7 +3,7 @@ package Acme::Albed;
 use utf8;
 use Any::Moose;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 has albedian => (
     is      => 'rw',
@@ -70,6 +70,7 @@ sub _conv {
         }
         else {
             return unless ( defined $char && $char ne "" );
+            my $enc;
             foreach my $key (@mos) {
                 $" = "|";
                 my ( $source, $conv ) = $self->_resource( $dict->{$key} );
@@ -78,10 +79,15 @@ sub _conv {
                 if ( $char =~ /(@source)/ ) {
                     for my $i ( 0 .. $#source ) {
                         if ( $char eq $source[$i] ) {
-                            $res .= $conv[$i];
+                            $enc = $conv[$i];
                         }
                     }
                 }
+            }
+            if (defined $enc) {
+                $res .= $enc;
+            } else {
+                $res .= $char;
             }
         }
     }
